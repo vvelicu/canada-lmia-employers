@@ -29,7 +29,7 @@ jobs:
 
       # install python libraries listed in the requirements file
       - name: Install python libraries
-      run: pip3 install -r requirements.txt
+        run: pip3 install -r requirements.txt
 
       # Running the code from the main python file
       - name: Extract, Transform and Export the data
