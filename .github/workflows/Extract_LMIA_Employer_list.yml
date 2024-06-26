@@ -1,0 +1,48 @@
+# The name of the current workflow
+name: Extract LMIA Emplyer List from Gov website
+
+# When the workflow will run?
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  # Also runs it every day based on the cron settings
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Multiple jobs can be added to a workflow. For now we only need 1 job
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Below are the tasks that will be executed as part of the job
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE, so the job can access it
+      - uses: actions/checkout@v2
+
+      # install python libraries listed in the requirements file
+      - name: Install python libraries
+      run: pip3 install -r requirements.txt
+
+      # Running the code from the main python file
+      - name: Extract, Transform and Export the data
+        run: |
+          python3 data_scraper_LMIA_employer_list.py
+
+      # The output of the python code is a csv file that should be pushed back to git
+      - name: Push the data file to git
+        run: |
+          git config --local user.name actions-user
+          git config --local user.email "actions@github.com"
+          git add -A
+          git commit --allow-empty -m "Uploading dataset. Latest running date: $(date)"
+          git push origin main
+          git commit --allow-empty --amend -m "Uploading dataset. Latest running date: $(date)"
