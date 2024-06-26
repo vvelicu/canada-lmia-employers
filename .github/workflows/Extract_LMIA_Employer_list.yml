@@ -25,7 +25,7 @@ jobs:
 
     # Below are the tasks that will be executed as part of the job
     steps:
-      # Checks-out the repository under $GITHUB_WORKSPACE, so the job can access it
+      # Checks-out the repository under GITHUB_WORKSPACE, so the job can access it
       - uses: actions/checkout@v2
 
       # install python libraries listed in the requirements file
