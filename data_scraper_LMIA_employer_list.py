@@ -328,4 +328,37 @@ master_df.describe()
 master_df['NOC_code'] = master_df['NOC'].str[:4]
 master_df['NOC_label'] = master_df['NOC'].str[5:]
 
-master_df.to_csv('Employer_list_positive_LMIA_Canada.csv')
+###############################################################################
+# Export the data to a sinfle master file
+master_df_name = 'Employer_list_positive_LMIA_Canada.csv'
+
+print('Export the master file to 1 single csv file: ' + master_df_name)
+master_df.to_csv(master_df_name)
+print('Exported ' + master_df_name + '\n')
+
+###############################################################################
+# Split the dataframe into smaller chunks and export each chunk to csv
+# Define the number of rows per each file exported:
+rows_per_file = 100000
+# Define the filename (it wil contain _the_file_number appended):
+base_filename = 'Employer_list_positive_LMIA_Canada'
+
+print('Splitting the master ' + master_df_name + ' file into multiple csv files of ' 
+      + str(rows_per_file) + 'rows each')
+
+# Build the split and export function
+def split_and_export_csv(df, rows_per_file, base_filename):
+    # Calculate the number of files needed
+    num_files = (len(df) // rows_per_file) + (1 if len(df) % rows_per_file != 0 else 0)
+    # Loop and save each subset
+    for i in range(num_files):
+        start_row = i * rows_per_file
+        end_row = (i + 1) * rows_per_file
+        chunk = df.iloc[start_row:end_row]
+        print('Started the export of ' + f'{base_filename}_{i+1}.csv')
+        chunk.to_csv(f'{base_filename}_{i+1}.csv')
+        print(f'Exported {base_filename}_{i+1}.csv' + '\n')
+
+
+# Run the export function
+split_and_export_csv(master_df, rows_per_file, base_filename)
